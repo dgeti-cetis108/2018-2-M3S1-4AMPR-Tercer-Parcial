@@ -13,9 +13,31 @@ app.post("/api/login", async (req, res) => {
   let password = req.body.password;
   let result = await login(user, password);
   if (result) {
-    res.send(result);
+    res.send({ exist: true, data: result });
   } else {
-    res.send(false);
+    res.send({ exist: false });
+  }
+});
+
+// validar existencia de nombre de usuario
+app.post("/api/user/validate/name", async (req, res) => {
+  let username = req.body.username;
+  let result = await isValidUserName(username);
+  if (result) {
+    res.send({ isValid: true });
+  } else {
+    res.send({ isValid: false });
+  }
+});
+
+// validar existencia de correo electronico
+app.post("/api/user/validate/email", async (req, res) => {
+  let useremail = req.body.useremail;
+  let result = await isValidUserEmail(useremail);
+  if (result) {
+    res.send({ isValid: true });
+  } else {
+    res.send({ isValid: false });
   }
 });
 
@@ -38,4 +60,11 @@ function login(username, userpasswd) {
       resolve(row);
     });
   });
+}
+
+function isValidUserName(username) {
+  // TODO: code here
+}
+function isValidUserEmail(useremail) {
+  // TODO: code here
 }
