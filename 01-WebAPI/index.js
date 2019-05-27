@@ -49,16 +49,33 @@ app.post("/api/user/new", async (req, res) => {
   user.firstname = req.body.user_firstname;
   user.lastname = req.body.user_lastname;
   user.email = req.body.user_email;
-  await saveNewUser(user);
-  // TODO: evaluate results
+  try {
+    await saveNewUser(user, res);
+  } catch (error) {
+    console.log(error);
+    res.send({ userCreated: false });
+  }
 });
 
 app.listen(port, function() {
   console.log(`Servidor Express Funcionando en el puerto ${port}`);
 });
 
-function saveNewUser(user) {
-  // TODO: code here
+function saveNewUser(u, res) {
+  return new Promise((resolve, reject) => {
+    let query =
+      "INSERT INTO users (name,passwd,firstname,lastname,email) VALUES (?,?,?,?,?)";
+    db.run(query, [u.name, u.passwd, u.firstname, u.lastname, u.email], err => {
+      if (err) {
+        reject(err.message);
+      } else {
+        resolve("Usuario creado correctamente");
+      }
+    });
+  }).then(val => {
+    console.log(val);
+    res.send({ userCreated: true });
+  });
 }
 
 function login(username, userpasswd) {
