@@ -8,7 +8,7 @@ const db = new sqlite3.Database("db/cetis108.db");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.post("/api/login", async (req, res) => {
+app.post("/api/user/login", async (req, res) => {
   let user = req.body.user;
   let password = req.body.password;
   let result = await login(user, password);
@@ -57,9 +57,79 @@ app.post("/api/user/new", async (req, res) => {
   }
 });
 
+// cambiar contraseña
+app.post("/api/user/password/save", async (req, res) => {
+  let user = {};
+  user.newPassword = req.body.user_new_password;
+  user.id = req.body.user_id;
+  try {
+    await saveNewPassword(user, res);
+  } catch (error) {
+    console.log(error);
+    res.send({ isSaved: false });
+  }
+});
+
+// cambiar estatus de usuarios
+app.post("/api/user/activate", async (req, res) => {
+  user_id = req.body.user_id;
+  try {
+    await changeStatus(user_id, res, 1);
+  } catch (error) {
+    console.log(error);
+    res.send({ isChanged: false });
+  }
+});
+
+app.post("/api/user/deactivate", async (req, res) => {
+  user_id = req.body.user_id;
+  try {
+    await changeStatus(user_id, res, 0);
+  } catch (error) {
+    console.log(error);
+    res.send({ isChanged: false });
+  }
+});
+
 app.listen(port, function() {
   console.log(`Servidor Express Funcionando en el puerto ${port}`);
 });
+
+function changeStatus(user_id, res, status) {
+  return new Promise((resolve, reject) => {
+    let query = "UPDATE users SET status=? WHERE id=?";
+    db.run(query, [status, user_id], function(err) {
+      if (err) {
+        reject(err.message);
+      }
+      resolve(this.changes);
+    });
+  }).then(val => {
+    if (val == 0) {
+      res.send({ isStatusChanged: false });
+    } else {
+      res.send({ isStatusChanged: true });
+    }
+  });
+}
+
+function saveNewPassword(user, res) {
+  return new Promise((resolve, reject) => {
+    let query = "UPDATE users SET passwd=? WHERE id=?";
+    db.run(query, [user.newPassword, user.id], function(err) {
+      if (err) {
+        reject(err.message);
+      }
+      resolve(this.changes);
+    });
+  }).then(val => {
+    if (val == 0) {
+      res.send({ isSaved: false });
+    } else {
+      res.send({ isSaved: true });
+    }
+  });
+}
 
 function saveNewUser(u, res) {
   return new Promise((resolve, reject) => {
