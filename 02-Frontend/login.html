@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Login page!</title>
+  </head>
+  <body>
+    <form
+      action="http://localhost:3000/api/user/login"
+      method="POST"
+      enctype="application/x-www-form-urlencoded"
+    >
+      <div>
+        <label for="user_name">Nombre de usuario</label>
+        <input type="text" name="user_name" id="user_name" required>
+      </div>
+      <div>
+        <label for="user_password">Contraseña</label>
+        <input type="password" name="user_password" id="user_password" required>
+      </div>
+      
+    </form>
+  </body>
+</html>

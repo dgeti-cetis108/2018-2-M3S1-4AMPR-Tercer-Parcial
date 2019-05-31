@@ -9,8 +9,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post("/api/user/login", async (req, res) => {
-  let user = req.body.user;
-  let password = req.body.password;
+  let user = req.body.user_name;
+  let password = req.body.user_password;
   let result = await login(user, password);
   if (result) {
     res.send({ exist: true, data: result });
