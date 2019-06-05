@@ -5,26 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Login page!</title>
+    <link rel="stylesheet" href="css/bulma.css">
+    <style>
+    .hidden { display: none; }
+    </style>
   </head>
   <body>
-    <form id="formLogin">
-      <div>
-        <label for="user_name">Nombre de usuario</label>
-        <input type="text" name="user_name" id="user_name" required />
-      </div>
-      <div>
-        <label for="user_password">Contraseña</label>
-        <input
-          type="password"
-          name="user_password"
-          id="user_password"
-          required
-        />
-      </div>
-      <div>
-        <button type="submit" id="loginButton">Iniciar sesión</button>
-      </div>
-    </form>
+    <div class="box">
+      <form id="formLogin">
+        <div>
+          <label for="user_name">Nombre de usuario</label>
+          <input type="text" name="user_name" id="user_name" required />
+        </div>
+        <div>
+          <label for="user_password">Contraseña</label>
+          <input
+            type="password"
+            name="user_password"
+            id="user_password"
+            required
+          />
+        </div>
+        <div>
+          <button type="submit" id="loginButton">Iniciar sesión</button>
+        </div>
+        <div id="errorMsg" class="notification is-danger hidden">esto prueba que es visible siempre</div>
+      </form>
+    </div>
     <script>
       document
         .getElementById("loginButton")
@@ -47,11 +54,20 @@
         );
         xhr.onreadystatechange = function() {
           if (xhr.readyState === XMLHttpRequest.DONE && this.status === 200) {
-            console.log("Petición realizada con éxito.");
-            console.log(xhr.response);
+            validateLogin(JSON.parse(xhr.response));
           }
         };
         xhr.send(params);
+      }
+      function validateLogin(res) {
+        if (res.exist == true) {
+          window.location = "/user-list.html";
+        } else if (!res.exist) {
+          let msg = "Usuario y/o contraseña incorrectos.";
+          let divError = document.getElementById("errorMsg");
+          divError.innerHTML = msg;
+          divError.classList.toggle("hidden");
+        }
       }
     </script>
   </body>
