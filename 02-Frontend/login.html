@@ -7,29 +7,52 @@
     <title>Login page!</title>
   </head>
   <body>
-    <form
-      action="http://localhost:3000/api/user/login"
-      method="POST"
-      enctype="application/x-www-form-urlencoded"
-    >
+    <form id="formLogin">
       <div>
         <label for="user_name">Nombre de usuario</label>
-        <input type="text" name="user_name" id="user_name" required>
+        <input type="text" name="user_name" id="user_name" required />
       </div>
       <div>
         <label for="user_password">Contraseña</label>
-        <input type="password" name="user_password" id="user_password" required>
+        <input
+          type="password"
+          name="user_password"
+          id="user_password"
+          required
+        />
       </div>
       <div>
-        <button type="submit">Iniciar sesión</button>
+        <button type="submit" id="loginButton">Iniciar sesión</button>
       </div>
     </form>
     <script>
-      function loginRequest() {
-        let xhttp = new XMLHttpRequest();
-        // TODO: aqui nos quedamos
-      }
+      document
+        .getElementById("loginButton")
+        .addEventListener("click", loginRequest, true);
 
+      function loginRequest(event) {
+        // detener la accion predeterminada del evento
+        event.preventDefault();
+
+        const xhr = new XMLHttpRequest();
+        const url = "http://localhost:3000/api/user/login";
+        let user_name = document.getElementById('user_name').value;
+        let user_password = document.getElementById('user_password').value;
+        let params = `user_name=${user_name}&user_password=${user_password}`;
+
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader(
+          "Content-Type",
+          "application/x-www-form-urlencoded"
+        );
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === XMLHttpRequest.DONE && this.status === 200) {
+            console.log("Petición realizada con éxito.");
+            console.log(xhr.response);
+          }
+        };
+        xhr.send(params);
+      }
     </script>
   </body>
 </html>

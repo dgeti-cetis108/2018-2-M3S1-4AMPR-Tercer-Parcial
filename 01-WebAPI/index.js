@@ -1,9 +1,12 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const sqlite3 = require("sqlite3").verbose();
+const cors = require("cors");
 const app = express();
 const port = 3000;
 const db = new sqlite3.Database("db/cetis108.db");
+
+app.use(cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -11,6 +14,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.post("/api/user/login", async (req, res) => {
   let user = req.body.user_name;
   let password = req.body.user_password;
+  console.log(user + ' ' + password);
   let result = await login(user, password);
   if (result) {
     res.send({ exist: true, data: result });
